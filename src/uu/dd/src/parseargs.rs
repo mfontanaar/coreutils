@@ -49,7 +49,7 @@ pub enum ParseError {
     InvalidNumber(String),
     // Add surrounding quotes in here to get around this bug in Fluent:
     // https://github.com/projectfluent/fluent-rs/issues/337
-    #[error("{}", translate!("dd-error-invalid-number-too-large", "input" => format!("‘{}’", .0.clone())))]
+    #[error("{}", translate!("dd-error-invalid-number-too-large", "input" => format!("{}", .0.clone())))]
     InvalidNumberTooLarge(String),
 }
 
