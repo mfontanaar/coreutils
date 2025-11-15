@@ -187,7 +187,7 @@ macro_rules! bin {
             use std::io::Write;
             use uucore::locale;
             // suppress extraneous error output for SIGPIPE failures/panics
-            uucore::panic::mute_sigpipe_panic();
+            // uucore::panic::mute_sigpipe_panic();
             locale::setup_localization(uucore::get_canonical_util_name(stringify!($util)))
                 .unwrap_or_else(|err| {
                     match err {
