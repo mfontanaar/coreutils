@@ -530,18 +530,40 @@ macro_rules! translate {
     ($id:expr, $($key:expr => $value:expr),+ $(,)?) => {
         {
             let mut args = fluent::FluentArgs::new();
+
+            const MAX_INT_AS_FLOAT: u64 = 9007199254740992;  // At this point not all integers can be represented as floats
+            const SENTINEL: char = '\u{F0000}';  // Private use area character
+            let mut mangled = false;
             $(
-                let value_str = $value.to_string();
+                let mut value_str = $value.to_string();
                 if let Ok(num_val) = value_str.parse::<i64>() {
-                    args.set($key, num_val);
+                    if num_val.abs() > MAX_INT_AS_FLOAT as i64 {
+                        mangled = true;
+                        value_str.push(SENTINEL);
+                        args.set($key, value_str);
+                    } else {
+                        args.set($key, num_val);
+                    }
+                } else if let Ok(unsigned_val) = value_str.parse::<u64>() {
+                    if unsigned_val > MAX_INT_AS_FLOAT {
+                        mangled = true;
+                        value_str.push(SENTINEL);
+                        args.set($key, value_str);
+                    } else {
+                        args.set($key, unsigned_val);
+                    }
                 } else if let Ok(float_val) = value_str.parse::<f64>() {
                     args.set($key, float_val);
                 } else {
-                    // Keep as string if not a number
                     args.set($key, value_str);
                 }
             )+
-            $crate::locale::get_message_with_args($id, args)
+
+            let mut localized = $crate::locale::get_message_with_args($id, args);
+            if mangled {
+               localized.retain(|c| c != SENTINEL);
+            }
+            localized
         }
     };
 }
