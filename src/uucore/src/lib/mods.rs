@@ -14,3 +14,5 @@ pub mod locale;
 pub mod os;
 pub mod panic;
 pub mod posix;
+#[cfg(target_family = "unix")]
+pub mod sigpipe;

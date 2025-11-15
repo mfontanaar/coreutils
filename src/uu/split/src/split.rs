@@ -48,7 +48,9 @@ static OPT_IO_BLKSIZE: &str = "-io-blksize";
 static ARG_INPUT: &str = "input";
 static ARG_PREFIX: &str = "prefix";
 
-#[uucore::main]
+// Without `ignore_sigpipe` some tests fail. They have to be looked
+// into to double check the test is correct.
+#[uucore::main(ignore_sigpipe = true)]
 pub fn uumain(args: impl uucore::Args) -> UResult<()> {
     let (args, obs_lines) = handle_obsolete(args);
     let matches = uucore::clap_localization::handle_clap_result(uu_app(), args)?;

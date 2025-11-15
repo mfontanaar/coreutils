@@ -32,6 +32,8 @@ pub use crate::mods::locale;
 pub use crate::mods::os;
 pub use crate::mods::panic;
 pub use crate::mods::posix;
+#[cfg(target_family = "unix")]
+pub use crate::mods::sigpipe;
 
 // * feature-gated modules
 #[cfg(feature = "backup-control")]

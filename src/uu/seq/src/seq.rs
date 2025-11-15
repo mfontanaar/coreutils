@@ -90,7 +90,9 @@ fn select_precision(
     }
 }
 
-#[uucore::main]
+// Without `ignore_sigpipe` some tests fail. They have to be looked
+// into to double check the test is correct.
+#[uucore::main(ignore_sigpipe = true)]
 pub fn uumain(args: impl uucore::Args) -> UResult<()> {
     let matches =
         uucore::clap_localization::handle_clap_result(uu_app(), split_short_args_with_value(args))?;
